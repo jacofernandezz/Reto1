@@ -1,6 +1,6 @@
 package com.banana.bananawhatsapp.controladores;
 
-import com.banana.bananawhatsapp.persistencia.IUsuarioRepository;
+import com.banana.bananawhatsapp.persistencia.extended.IUsuarioRepository;
 import com.banana.bananawhatsapp.util.DBUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
