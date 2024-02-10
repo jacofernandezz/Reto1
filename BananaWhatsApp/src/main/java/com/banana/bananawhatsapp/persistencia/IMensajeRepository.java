@@ -55,4 +55,14 @@ public interface IMensajeRepository  extends JpaRepository<Mensaje, Integer> {
         usuario.valido(false);
         return borrarTodosValidado(usuario.getId()) > 0;
     }
+
+    @Transactional
+    @Modifying
+    @Query("SELECT m FROM Mensaje m " +
+            "WHERE (m.remitente = :remitente AND m.destinatario = :destinatario) OR " +
+            "(m.remitente = :destinatario AND m.destinatario = :remitente) " +
+            "ORDER BY m.fecha ASC")
+    List<Mensaje> mostrarChatConUsuario(@Param("remitente") Usuario remitente,
+                                        @Param("destinatario") Usuario destinatario);
+
 }

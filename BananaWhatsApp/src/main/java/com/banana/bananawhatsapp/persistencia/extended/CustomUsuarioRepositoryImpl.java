@@ -4,20 +4,21 @@ import com.banana.bananawhatsapp.exceptions.UsuarioException;
 import com.banana.bananawhatsapp.modelos.Usuario;
 import com.banana.bananawhatsapp.persistencia.IMensajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
-public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository{
+@Repository
+public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
 
     @PersistenceContext
     EntityManager em;
-
-    @Autowired
-    IUsuarioRepository usuarioRepo;
 
     @Autowired
     IMensajeRepository mensajeRepo;
@@ -25,7 +26,7 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository{
     @Override
     public void actualizar(Usuario usuario) {
         usuario.valido(false);
-        TypedQuery<Usuario> q = em.createQuery("UPDATE Usuario u SET u.nombre=:nombre, u.email=:email, u.alta=:alta, u.activo=:activo WHERE u.id=:id", Usuario.class);
+        Query q = em.createQuery("UPDATE Usuario u SET u.nombre=:nombre, u.email=:email, u.alta=:alta, u.activo=:activo WHERE u.id=:id");
         q.setParameter("nombre", usuario.getNombre());
         q.setParameter("email", usuario.getEmail());
         q.setParameter("alta", usuario.getAlta());
@@ -37,23 +38,24 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository{
     @Transactional
     @Override
     public boolean borrar(Integer idUsuario) {
+
         try {
-            Optional<Usuario> usuario = usuarioRepo.findById(idUsuario);
-            if (usuario.isPresent()) {
+            Usuario usuario = em.find(Usuario.class, idUsuario);
+            if (usuario != null) {
                 // Actualizamos las referencias, mientras una de las partes siga siendo un usuario de la aplicacion
                 // es conveniente guardar la informacion de sus mensajes:
-                mensajeRepo.actualizarReferenciasRemitente(usuario.get());
-                mensajeRepo.actualizarReferenciasDestinatario(usuario.get());
+                mensajeRepo.actualizarReferenciasRemitente(usuario);
+                mensajeRepo.actualizarReferenciasDestinatario(usuario);
                 //Si ninguna de las partes es ya usuaria eliminamos los mensajes.
                 mensajeRepo.eliminarMensajesConReferenciasNulas();
 
-                usuarioRepo.delete(usuario.get());
+                em.remove(usuario);
                 return true;
             } else {
-                return false;
+                throw new UsuarioException("Error al encontrar el usuario");
             }
         } catch (Exception e) {
-           throw new UsuarioException("Error al intentar borrar el usuario");
+            throw new UsuarioException("Error al intentar borrar el usuario");
         }
     }
 }
