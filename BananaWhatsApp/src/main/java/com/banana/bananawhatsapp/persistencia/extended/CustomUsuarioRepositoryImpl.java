@@ -1,15 +1,26 @@
 package com.banana.bananawhatsapp.persistencia.extended;
 
+import com.banana.bananawhatsapp.exceptions.UsuarioException;
 import com.banana.bananawhatsapp.modelos.Usuario;
+import com.banana.bananawhatsapp.persistencia.IMensajeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.Optional;
 
-public class CustomUsuarioRepositoryImpl implements ICustomUsuarioRepository{
+public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository{
 
     @PersistenceContext
     EntityManager em;
+
+    @Autowired
+    IUsuarioRepository usuarioRepo;
+
+    @Autowired
+    IMensajeRepository mensajeRepo;
 
     @Override
     public void actualizar(Usuario usuario) {
@@ -21,5 +32,28 @@ public class CustomUsuarioRepositoryImpl implements ICustomUsuarioRepository{
         q.setParameter("activo", usuario.isActivo());
         q.setParameter("id", usuario.getId());
         q.executeUpdate();
+    }
+
+    @Transactional
+    @Override
+    public boolean borrar(Integer idUsuario) {
+        try {
+            Optional<Usuario> usuario = usuarioRepo.findById(idUsuario);
+            if (usuario.isPresent()) {
+                // Actualizamos las referencias, mientras una de las partes siga siendo un usuario de la aplicacion
+                // es conveniente guardar la informacion de sus mensajes:
+                mensajeRepo.actualizarReferenciasRemitente(usuario.get());
+                mensajeRepo.actualizarReferenciasDestinatario(usuario.get());
+                //Si ninguna de las partes es ya usuaria eliminamos los mensajes.
+                mensajeRepo.eliminarMensajesConReferenciasNulas();
+
+                usuarioRepo.delete(usuario.get());
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+           throw new UsuarioException("Error al intentar borrar el usuario");
+        }
     }
 }

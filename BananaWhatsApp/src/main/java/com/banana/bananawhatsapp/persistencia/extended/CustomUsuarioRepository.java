@@ -2,10 +2,9 @@ package com.banana.bananawhatsapp.persistencia.extended;
 
 import com.banana.bananawhatsapp.modelos.Usuario;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-public interface ICustomUsuarioRepository {
+public interface CustomUsuarioRepository {
 
     void actualizar(Usuario usuario);
+
+    boolean borrar(Integer idUsuario);
 }

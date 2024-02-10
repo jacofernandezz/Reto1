@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -25,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class UsuarioRepositoryTest {
     @Autowired
     IUsuarioRepository repo;
-    @Autowired
-    IMensajeRepository mensajeRepository;
 
     @BeforeEach
     void cleanAndReloadData() {
@@ -59,7 +59,6 @@ class UsuarioRepositoryTest {
 
     @Test
     @Order(3)
-
     void dadoUnUsuarioValido_cuandoActualizar_entoncesUsuarioValido() {
         Integer idUser = 1;
         Usuario user = new Usuario(idUser, "Juan", "j@j.com", LocalDate.now(), true);
@@ -74,7 +73,7 @@ class UsuarioRepositoryTest {
         Integer idUser = -1;
         Usuario user = new Usuario(idUser, "Juan", "j@j.com", LocalDate.now(), true);
         assertThrows(UsuarioException.class, () -> {
-           /* repo.actualizar(user);*/
+           repo.actualizar(user);
         });
     }
 
@@ -82,8 +81,8 @@ class UsuarioRepositoryTest {
     @Order(5)
     void dadoUnUsuarioValido_cuandoBorrar_entoncesOK() {
         Usuario user = new Usuario(1, null, null, null, true);
-        int result = repo.borrar(user.getId());
-        assertEquals(1,result);
+        boolean ok = repo.borrar(user.getId());
+        assertTrue(ok);
     }
 
     @Test
@@ -97,24 +96,22 @@ class UsuarioRepositoryTest {
 
     @Test
     @Order(7)
-    void dadoUnUsuarioValido_cuandoObtenerPosiblesDestinatarios_entoncesLista() throws Exception {
+    void dadoUnUsuarioValido_cuandoObtenerPosiblesDestinatarios_entoncesLista() {
         Integer idUser = 1;
         int numPosibles = 100;
         Usuario user = new Usuario(idUser, "Juan", "j@j.com", LocalDate.now(), true);
-
-//        Set<Usuario> conjuntoDestinatarios = repo.obtenerPosiblesDestinatarios(user.getId(), numPosibles);
-//        assertTrue(conjuntoDestinatarios.size() <= numPosibles);
+        List<Usuario> conjuntoDestinatarios = repo.obtenerPosiblesDestinatarios(user.getId(), PageRequest.of(0, numPosibles));
+        assertTrue(conjuntoDestinatarios.size() <= numPosibles);
     }
 
     @Test
     @Order(8)
-    void dadoUnUsuarioNOValido_cuandoObtenerPosiblesDestinatarios_entoncesExcepcion() throws Exception {
+    void dadoUnUsuarioNOValido_cuandoObtenerPosiblesDestinatarios_entoncesExcepcion() {
         Usuario user = new Usuario(-1, null, null, null, true);
         int numPosibles = 100;
         assertThrows(UsuarioException.class, () -> {
-//            Set<Usuario> conjuntoDestinatarios = repo.obtenerPosiblesDestinatarios(user.getId(), numPosibles);
+            List<Usuario> conjuntoDestinatarios = repo.obtenerPosiblesDestinatarios(user.getId(), PageRequest.of(0, numPosibles));
         });
-
     }
 
 
