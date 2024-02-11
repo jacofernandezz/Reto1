@@ -34,12 +34,13 @@ class ServicioMensajeriaTest {
 
     @Test
     void testBeans(){
+        assertNotNull(repoUsuario);
         assertNotNull(servicio);
     }
 
     @Test
     @Transactional
-    void dadoRemitenteYDestinatarioYTextoValido_cuandoEnviarMensaje_entoncesMensajeValido() throws Exception {
+    void dadoRemitenteYDestinatarioYTextoValido_cuandoEnviarMensaje_entoncesMensajeValido() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = repoUsuario.getReferenceById(2);
         String texto = "Felices Fiestas!";
@@ -48,7 +49,8 @@ class ServicioMensajeriaTest {
     }
 
     @Test
-    void dadoRemitenteYDestinatarioYTextoNOValido_cuandoEnviarMensaje_entoncesExcepcion() throws Exception {
+    @Transactional
+    void dadoRemitenteYDestinatarioYTextoNOValido_cuandoEnviarMensaje_entoncesExcepcion() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = repoUsuario.getReferenceById(2);
         String texto = "SMS < 10";
@@ -57,10 +59,9 @@ class ServicioMensajeriaTest {
         });
     }
 
-
     @Test
     @Transactional
-    void dadoRemitenteYDestinatarioValido_cuandoMostrarChatConUsuario_entoncesListaMensajes() throws Exception {
+    void dadoRemitenteYDestinatarioValido_cuandoMostrarChatConUsuario_entoncesListaMensajes() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = repoUsuario.getReferenceById(2);
 
@@ -69,17 +70,18 @@ class ServicioMensajeriaTest {
     }
 
     @Test
-    void dadoRemitenteYDestinatarioNOValido_cuandoMostrarChatConUsuario_entoncesExcepcion() throws Exception {
+    @Transactional
+    void dadoRemitenteYDestinatarioNOValido_cuandoMostrarChatConUsuario_entoncesExcepcion() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = new Usuario(2, null, null, null, false);
         assertThrows(Exception.class, () -> {
-         List<Mensaje> userMessages = servicio.mostrarChatConUsuario(remitente, destinatario);
+            servicio.mostrarChatConUsuario(remitente, destinatario);
         });
     }
 
     @Test
     @Transactional
-    void dadoRemitenteYDestinatarioValido_cuandoBorrarChatConUsuario_entoncesOK() throws Exception {
+    void dadoRemitenteYDestinatarioValido_cuandoBorrarChatConUsuario_entoncesOK() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = repoUsuario.getReferenceById(2);
         boolean borrarChat = servicio.borrarChatConUsuario(remitente, destinatario);
@@ -87,11 +89,13 @@ class ServicioMensajeriaTest {
     }
 
     @Test
-    void dadoRemitenteYDestinatarioNOValido_cuandoBorrarChatConUsuario_entoncesExcepcion() throws Exception {
+    @Transactional
+    void dadoRemitenteYDestinatarioNOValido_cuandoBorrarChatConUsuario_entoncesExcepcion() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = new Usuario(2, null, null, null, false);
         assertThrows(Exception.class, () -> {
-             boolean borrarChat = servicio.borrarChatConUsuario(remitente, destinatario);
+             servicio.borrarChatConUsuario(remitente, destinatario);
         });
     }
+
 }

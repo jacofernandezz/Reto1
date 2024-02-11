@@ -24,8 +24,10 @@ public class Usuario {
     private String email;
     private LocalDate alta;
     private boolean activo;
+    @ToString.Exclude
     @OneToMany(mappedBy = "remitente", cascade = CascadeType.ALL)
     private List<Mensaje> mensajesEnviados;
+    @ToString.Exclude
     @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL)
     private List<Mensaje> mensajesRecibidos;
 

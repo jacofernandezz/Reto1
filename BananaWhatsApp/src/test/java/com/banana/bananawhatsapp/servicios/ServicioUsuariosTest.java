@@ -57,7 +57,7 @@ class ServicioUsuariosTest {
     @Test
     void dadoUnUsuarioValido_cuandoBorrarUsuario_entoncesUsuarioValido() {
         Usuario user = new Usuario(2, "Gema", "g@g.com", LocalDate.now(), true);
-        boolean userDelete = servicio.borrarUsuario(user);
+        boolean userDelete = servicio.borrarUsuario(user.getId());
         assertThat(userDelete, is(true));
     }
 
@@ -65,7 +65,7 @@ class ServicioUsuariosTest {
     void dadoUnUsuarioNOValido_cuandoBorrarUsuario_entoncesExcepcion() {
         Usuario user = new Usuario(-1, "John", "j@j.com", LocalDate.now(), false);
         assertThrows(UsuarioException.class, () -> {
-            servicio.borrarUsuario(user);
+            servicio.borrarUsuario(user.getId());
         });
     }
 

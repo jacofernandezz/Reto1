@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 public interface IServicioUsuarios {
-    public Usuario obtener(int id) throws UsuarioException;
 
     public Usuario crearUsuario(Usuario usuario) throws UsuarioException;
 
-    public boolean borrarUsuario(Usuario usuario) throws UsuarioException;
+    public boolean borrarUsuario(Integer idUsuario) throws UsuarioException;
 
     public Usuario actualizarUsuario(Usuario usuario) throws UsuarioException;
 

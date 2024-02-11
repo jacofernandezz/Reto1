@@ -8,16 +8,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
+
 @Service
 public class ServicioUsuarioImpl implements IServicioUsuarios{
 
-   @Autowired
+    @Autowired
     private IUsuarioRepository repo;
-    @Override
-    public Usuario obtener(int id) throws UsuarioException {
-        return null;
-    }
 
     @Override
     public Usuario crearUsuario(Usuario usuario) throws UsuarioException {
@@ -25,8 +21,8 @@ public class ServicioUsuarioImpl implements IServicioUsuarios{
     }
 
     @Override
-    public boolean borrarUsuario(Usuario usuario) throws UsuarioException {
-        return repo.borrar(usuario.getId());
+    public boolean borrarUsuario(Integer idUsuario) throws UsuarioException {
+        return repo.borrar(idUsuario);
     }
 
     @Override

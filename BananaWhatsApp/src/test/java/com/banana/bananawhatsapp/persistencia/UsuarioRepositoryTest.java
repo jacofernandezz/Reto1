@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,7 @@ class UsuarioRepositoryTest {
 
     @Test
     @Order(1)
-    void dadoUnUsuarioValido_cuandoCrear_entoncesUsuarioValido() throws Exception {
+    void dadoUnUsuarioValido_cuandoCrear_entoncesUsuarioValido() {
         Usuario nuevo = new Usuario(null, "Ricardo", "r@r.com", LocalDate.now(), true);
         repo.save(nuevo);
 
@@ -110,7 +111,7 @@ class UsuarioRepositoryTest {
         Usuario user = new Usuario(-1, null, null, null, true);
         int numPosibles = 100;
         assertThrows(UsuarioException.class, () -> {
-            List<Usuario> conjuntoDestinatarios = repo.obtenerPosiblesDestinatarios(user.getId(), PageRequest.of(0, numPosibles));
+            repo.obtenerPosiblesDestinatarios(user.getId(), PageRequest.of(0, numPosibles));
         });
     }
 

@@ -84,7 +84,7 @@ class MensajeRepositoryTest {
     @Test
     @Order(5)
     @Transactional
-    void dadoUnRemitenteValido_cuandoBorrarEntre_entoncesOK() throws Exception {
+    void dadoUnRemitenteValido_cuandoBorrarEntre_entoncesOK() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         Usuario destinatario = repoUsuario.getReferenceById(2);
 
@@ -95,7 +95,7 @@ class MensajeRepositoryTest {
     @Test
     @Order(6)
     @Transactional
-    void dadoUnRemitenteNOValido_cuandoBorrarEntre_entoncesExcepcion() throws Exception {
+    void dadoUnRemitenteNOValido_cuandoBorrarEntre_entoncesExcepcion() {
         Usuario remitente = repoUsuario.getReferenceById(1);
         remitente.setActivo(false);
         Usuario destinatario = repoUsuario.getReferenceById(2);
@@ -108,7 +108,7 @@ class MensajeRepositoryTest {
     @Test
     @Order(7)
     @Transactional
-    void dadoUnUsuarioValido_cuandoBorrarTodos_entoncesOK() throws Exception {
+    void dadoUnUsuarioValido_cuandoBorrarTodos_entoncesOK() {
         Usuario user = repoUsuario.getReferenceById(1);
 
         boolean borrarChat = repoMensaje.borrarTodos(user);
@@ -118,7 +118,7 @@ class MensajeRepositoryTest {
     @Test
     @Order(8)
     @Transactional
-    void dadoUnUsuarioNOValido_cuandoBorrarTodos_entoncesExcepcion() throws Exception {
+    void dadoUnUsuarioNOValido_cuandoBorrarTodos_entoncesExcepcion() {
         Usuario user = new Usuario(1, null, null, null, true);
         assertThrows(UsuarioException.class, () -> {
             repoMensaje.borrarTodos(user);
