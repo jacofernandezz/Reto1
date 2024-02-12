@@ -61,8 +61,7 @@ public interface IMensajeRepository  extends JpaRepository<Mensaje, Integer> {
             "WHERE (m.remitente = :remitente AND m.destinatario = :destinatario) OR " +
             "(m.remitente = :destinatario AND m.destinatario = :remitente) " +
             "ORDER BY m.fecha ASC")
-    List<Mensaje> mostrarChatConUsuarioValidado(@Param("remitente") Usuario remitente,
-                                        @Param("destinatario") Usuario destinatario);
+    List<Mensaje> mostrarChatConUsuarioValidado(@Param("remitente") Usuario remitente, @Param("destinatario") Usuario destinatario);
 
     default List<Mensaje> mostrarChatConUsuario(Usuario remitente, Usuario destinatario) {
         remitente.valido(false);

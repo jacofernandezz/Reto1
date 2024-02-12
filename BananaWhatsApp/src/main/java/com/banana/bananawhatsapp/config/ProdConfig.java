@@ -8,6 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
 @Profile("prod")
+@PropertySource("classpath:application.properties")
 @PropertySource("classpath:application-prod.properties")
 public class ProdConfig {
     @Bean
