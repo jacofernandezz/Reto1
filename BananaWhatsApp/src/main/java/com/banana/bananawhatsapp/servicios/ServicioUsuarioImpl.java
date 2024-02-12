@@ -35,4 +35,9 @@ public class ServicioUsuarioImpl implements IServicioUsuarios{
     public List<Usuario> obtenerPosiblesDesinatarios(Usuario usuario, int max) throws UsuarioException {
         return repo.obtenerPosiblesDestinatarios(usuario.getId(), PageRequest.of(0, max));
     }
+
+    @Override
+    public Usuario obtener(Integer idUsuario) throws UsuarioException {
+        return repo.obtener(idUsuario);
+    }
 }

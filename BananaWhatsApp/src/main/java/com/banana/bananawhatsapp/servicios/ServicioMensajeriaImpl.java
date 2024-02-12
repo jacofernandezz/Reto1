@@ -7,6 +7,7 @@ import com.banana.bananawhatsapp.modelos.Usuario;
 import com.banana.bananawhatsapp.persistencia.IMensajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,20 +27,11 @@ public class ServicioMensajeriaImpl implements IServicioMensajeria{
 
     @Override
     public List<Mensaje> mostrarChatConUsuario(Usuario remitente, Usuario destinatario) throws UsuarioException, MensajeException {
-        // Verificar si los usuarios son válidos
-        if (!remitente.valido(false)) {
-            throw new UsuarioException("El remitente no es válido");
-        }
-        if (!destinatario.valido(false)) {
-            throw new UsuarioException("El destinatario no es válido");
-        }
-
-        // Si los usuarios son válidos, obtener el chat entre ellos
         return repo.mostrarChatConUsuario(remitente, destinatario);
     }
 
     @Override
     public boolean borrarChatConUsuario(Usuario remitente, Usuario destinatario) throws UsuarioException, MensajeException {
-        return repo.borrarEntre(remitente,destinatario);
+        return repo.borrarEntre(remitente, destinatario);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 public class ControladorUsuarios {
 
     @Autowired
@@ -29,7 +29,7 @@ public class ControladorUsuarios {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Boolean> baja(@PathVariable Integer idUsuario) {
         servicioUsuarios.borrarUsuario(idUsuario);
         System.out.println("Borrado usuario con ID: " + idUsuario);

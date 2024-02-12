@@ -27,6 +27,12 @@ public class Mensaje {
     private String cuerpo;
     private LocalDate fecha;
 
+    @Transient
+    private final static int minLength = 10;
+
+    @Transient
+    private final static int maxLength = 200;
+
     private boolean validarFecha() {
         return this.fecha != null && this.fecha.compareTo(LocalDate.now()) <= 0;
     }
@@ -37,7 +43,8 @@ public class Mensaje {
                 && remitente.valido(remitente.getId()==null)
                 && destinatario.valido(destinatario.getId()==null)
                 && cuerpo != null
-                && cuerpo.length() > 10
+                && cuerpo.length() > minLength
+                && cuerpo.length() <= maxLength
                 && validarFecha()
         ) return true;
         else throw new MensajeException("Mensaje no valido");

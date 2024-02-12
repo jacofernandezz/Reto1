@@ -15,4 +15,6 @@ public interface IServicioUsuarios {
     public Usuario actualizarUsuario(Usuario usuario) throws UsuarioException;
 
     public List<Usuario> obtenerPosiblesDesinatarios(Usuario usuario, int max) throws UsuarioException;
+
+    public Usuario obtener(Integer idUsuario) throws UsuarioException;
 }

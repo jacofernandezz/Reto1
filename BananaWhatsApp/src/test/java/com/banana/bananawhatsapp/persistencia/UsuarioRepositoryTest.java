@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
+@ActiveProfiles({"dev"})
 class UsuarioRepositoryTest {
+
     @Autowired
     IUsuarioRepository repo;
 
@@ -91,7 +93,7 @@ class UsuarioRepositoryTest {
     void dadoUnUsuarioNOValido_cuandoBorrar_entoncesExcepcion() {
         Usuario user = new Usuario(-1, null, null, null, true);
         assertThrows(Exception.class, () -> {
-            repo.deleteById(user.getId());
+            repo.borrar(user.getId());
         });
     }
 

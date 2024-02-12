@@ -24,4 +24,11 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> , Cu
         return obtenerPosiblesDestinatariosValidado(idUsuario, pageable);
     }
 
+    default Usuario obtener(Integer idUsuario){
+        Usuario user = new Usuario();
+        user.setId(idUsuario);
+        user.validarId();
+        return findById(idUsuario).get();
+    }
+
 }

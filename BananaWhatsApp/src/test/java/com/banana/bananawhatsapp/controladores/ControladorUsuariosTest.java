@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
+@ActiveProfiles({"dev"})
 class ControladorUsuariosTest {
 
     @Autowired
@@ -65,12 +67,12 @@ class ControladorUsuariosTest {
     void dadoUsuarioValido_cuandoActualizar_entoncesUsuarioValido() {
         Integer idUser = 2;
         LocalDate fecha = LocalDate.parse("2023-12-17");
-        Usuario user = repoUser.getReferenceById(idUser);
+        Usuario user = repoUser.obtener(idUser);
         user.setNombre("Juan Luis");
         user.setEmail("jl@jll.com");
         user.setAlta(fecha);
         controladorUsuarios.actualizar(user);
-        assertThat(repoUser.getReferenceById(idUser).getNombre(), is("Juan Luis"));
+        assertThat(repoUser.obtener(idUser).getNombre(), is("Juan Luis"));
     }
 
     @Test
@@ -79,7 +81,7 @@ class ControladorUsuariosTest {
         assertThrows(UsuarioException.class, () -> {
             Integer idUser = 2;
             LocalDate fecha = LocalDate.parse("2025-12-17");
-            Usuario user = repoUser.getReferenceById(idUser);
+            Usuario user = repoUser.obtener(idUser);
             user.setNombre("Juan Luis");
             user.setEmail("jl@jll.com");
             user.setAlta(fecha);
@@ -90,12 +92,13 @@ class ControladorUsuariosTest {
     @Test
     @Transactional
     void dadoUsuarioValido_cuandoBaja_entoncesUsuarioValido() {
-        Usuario user = repoUser.getReferenceById(1);
+        Usuario user = repoUser.obtener(1);
         ResponseEntity<Boolean> response = controladorUsuarios.baja(user.getId());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
+    @Transactional
     void dadoUsuarioNOValido_cuandoBaja_entoncesExcepcion() {
         Usuario user = new Usuario(-1, null, null, null, true);
         assertThrows(Exception.class, () -> {

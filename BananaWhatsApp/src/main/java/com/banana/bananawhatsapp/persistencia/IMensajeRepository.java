@@ -37,8 +37,8 @@ public interface IMensajeRepository  extends JpaRepository<Mensaje, Integer> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM Mensaje m WHERE m.remitente.id = :idRemitente AND m.destinatario.id = :idDestinatario")
-    int borrarEntreValidado(Integer idRemitente, Integer idDestinatario);
+    @Query("DELETE FROM Mensaje m WHERE (m.remitente.id = :remitente AND m.destinatario.id = :destinatario) OR (m.remitente.id = :destinatario AND m.destinatario.id = :remitente)")
+    int borrarEntreValidado(Integer remitente, Integer destinatario);
 
     default Boolean borrarEntre(Usuario remitente, Usuario destinatario) {
         remitente.valido(false);
@@ -57,12 +57,17 @@ public interface IMensajeRepository  extends JpaRepository<Mensaje, Integer> {
     }
 
     @Transactional
-    @Modifying
     @Query("SELECT m FROM Mensaje m " +
             "WHERE (m.remitente = :remitente AND m.destinatario = :destinatario) OR " +
             "(m.remitente = :destinatario AND m.destinatario = :remitente) " +
             "ORDER BY m.fecha ASC")
-    List<Mensaje> mostrarChatConUsuario(@Param("remitente") Usuario remitente,
+    List<Mensaje> mostrarChatConUsuarioValidado(@Param("remitente") Usuario remitente,
                                         @Param("destinatario") Usuario destinatario);
+
+    default List<Mensaje> mostrarChatConUsuario(Usuario remitente, Usuario destinatario) {
+        remitente.valido(false);
+        destinatario.valido(false);
+        return mostrarChatConUsuarioValidado(remitente,destinatario);
+    }
 
 }
